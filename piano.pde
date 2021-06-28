@@ -8,6 +8,7 @@ boolean legato = false;
 
 boolean enableStars = true;
 boolean enableSparkles = true;
+boolean highContrast = false;
 
 float currentHue = 20;
 
@@ -82,9 +83,12 @@ void drawBlob(Blob blob) {
     drawSparkle(blob);
   }
 
+  float hue1 = highContrast ? (blob.hue + 85) % 100.0 : blob.hue - 5;
+  float hue2 = highContrast ? (blob.hue + 70) % 100.0 : blob.hue - 10;
+
   strokeWeight(blob.r / 30);
-  stroke(blob.hue, 80, 50, 50);
-  fill(blob.hue, 90, 70, 70);
+  stroke(hue2, 80, 50, 50);
+  fill(hue1, 90, 70, 70);
 
   float squash = pow(blob.vy / 800, 2);
   float squash1 = 0.95 + squash;
@@ -115,7 +119,7 @@ void drawSparkle(Blob blob) {
 }
 
 float nearHue(float hue) {
-  float newHue = hue + random(0, 10);
+  float newHue = (highContrast ? hue + 50 : hue) + random(0, 10);
   
   return newHue > 100 ? newHue - 100 : newHue;
 }
@@ -178,6 +182,9 @@ void keyPressed() {
   } else if (key == '2') {
     println("toggle stparkes");
     enableSparkles = !enableSparkles;
+  } else if (key == '3') {
+    println("toggle high contrast");
+    highContrast = !highContrast; 
   }
 }
 
