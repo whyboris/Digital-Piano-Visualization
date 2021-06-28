@@ -40,7 +40,7 @@ void noteOn(int channel, int pitch, int velocity) {
   blobs[pitch].x = (pitch - 20) * width / 88;
   blobs[pitch].y = height - 100;
   blobs[pitch].vx = 0;
-  blobs[pitch].vy = velocity;
+  blobs[pitch].vy = velocity * 7;
   blobs[pitch].r = velocity * 5;
   //x++;
 }

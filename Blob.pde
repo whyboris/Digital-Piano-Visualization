@@ -13,7 +13,11 @@ class Blob {
   }
 
   void update() {
+     vy = vy - 5;
      y = y - vy / 100;
-     r = r + 0.5;
+     //r = r + 0.5;
+     if (y > height - 30) {
+       s = "off"; 
+     }
   }
 }
