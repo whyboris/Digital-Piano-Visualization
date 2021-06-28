@@ -14,18 +14,23 @@ class Blob {
   }
 
   void update() {
-     vy = vy - 5;
-     y = y - vy / 100;
-     //r = r + 0.5;
-     if (y > height) {
-       s = "off"; 
-     }
-     if (y < 0) {
-       y = 0;
-       vy = -10; 
-     }
-     if (abs(r - rFinal) > 0.5) {
-       r = r + 0.5 * (rFinal - r) / 2;
-     }
+    vy = vy - 5;
+    y = y - vy / 100;
+    //r = r + 0.5;
+    if (y > height) {
+      s = "off"; 
+    }
+    if (y < 0) {
+      y = 0;
+      vy = -10; 
+    }
+    if (abs(r - rFinal) > 0.5) {
+      r = r + 0.5 * (rFinal - r) / 2;
+    }
+    if (rFinal < 1) {
+      rFinal = 1; 
+    } else {
+      rFinal = rFinal - 1; 
+    }    
   }
 }

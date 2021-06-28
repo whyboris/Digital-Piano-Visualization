@@ -31,7 +31,12 @@ void draw() {
   if (currentHue > 100) {
     currentHue = 0; 
   }
-  background(0);
+
+  //background(0);
+  
+  noStroke();
+  fill(0, 0, 0, 7);
+  rect(0,0,width,height);
 
   for (int i = 0; i < blobs.length; i++) {
     if (blobs[i].s != "off") {   
@@ -60,7 +65,7 @@ void noteOn(int channel, int pitch, int velocity) {
   blobs[pitch].x = (pitch - 20) * width / 88;
   blobs[pitch].y = blobs[pitch].y > height ? height - 100 : blobs[pitch].y;
   blobs[pitch].vy = velocity * 7;
-  blobs[pitch].rFinal = velocity * 5;
+  blobs[pitch].rFinal = velocity * 7;
   //x++;
 }
 
