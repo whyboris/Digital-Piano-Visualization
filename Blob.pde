@@ -16,8 +16,12 @@ class Blob {
      vy = vy - 5;
      y = y - vy / 100;
      //r = r + 0.5;
-     if (y > height - 30) {
+     if (y > height) {
        s = "off"; 
+     }
+     if (y < 0) {
+       y = 0;
+       vy = -10; 
      }
   }
 }

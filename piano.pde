@@ -12,7 +12,7 @@ void setup() {
   myBus = new MidiBus(this, 0, -1); // set MIDI input, ignore output
   
   for (int i = 0; i < blobs.length; i++) {
-    blobs[i] = new Blob(0, 0, 0, 0, 0, "off");
+    blobs[i] = new Blob(0, height, 0, 0, 0, "off");
   }
   
   size(800, 600); // or enable full screen:
@@ -38,7 +38,7 @@ void noteOn(int channel, int pitch, int velocity) {
   //println("ON:  "+pitch);
   blobs[pitch].s = "on";
   blobs[pitch].x = (pitch - 20) * width / 88;
-  blobs[pitch].y = height - 100;
+  blobs[pitch].y = blobs[pitch].y > height ? height - 100 : blobs[pitch].y;
   blobs[pitch].vx = 0;
   blobs[pitch].vy = velocity * 7;
   blobs[pitch].r = velocity * 5;
