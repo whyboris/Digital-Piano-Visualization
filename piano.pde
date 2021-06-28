@@ -60,12 +60,16 @@ void draw() {
       strokeWeight(blobs[i].r / 30);
       stroke(blobs[i].hue, 80, 50, 50);
       fill(blobs[i].hue, 90, 70, 70);
+      
+      float squash = pow(blobs[i].vy / 800, 2);
+      float squash1 = 0.95 + squash;
+      float squash2 = 0.90 + squash;
 
-      ellipse(blobs[i].x, blobs[i].y, blobs[i].r/5, blobs[i].r/5);
+      ellipse(blobs[i].x, blobs[i].y, blobs[i].r/5, blobs[i].r/5 * squash2);
       
       noStroke();
       fill(blobs[i].hue, 100, 100, 90);
-      ellipse(blobs[i].x, blobs[i].y, blobs[i].r/10, blobs[i].r/10);
+      ellipse(blobs[i].x, blobs[i].y - blobs[i].vy / 50, blobs[i].r/10, blobs[i].r/10 * squash1);
     }
   }
   // println(frameRate);

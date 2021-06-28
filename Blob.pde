@@ -27,8 +27,8 @@ class Blob {
     if (abs(r - rFinal) > 0.5) {
       r = r + 0.5 * (rFinal - r) / 2;
     }
-    if (rFinal < 1) {
-      rFinal = 1; 
+    if (rFinal < 50) {
+      rFinal = 50; 
     } else {
       rFinal = rFinal - 1; 
     }    
