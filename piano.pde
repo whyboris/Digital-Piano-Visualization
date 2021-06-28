@@ -6,6 +6,9 @@ Blob[] blobs = new Blob[130];
 
 boolean legato = false;
 
+boolean enableStars = true;
+boolean enableSparkles = true;
+
 float currentHue = 20;
 
 PGraphics starCanvas;
@@ -22,9 +25,12 @@ void setup() {
 
   colorMode(HSB, 100);
 
-  size(800, 600); // or enable full screen:
+  size(1200, 500); // or enable full screen:
   //fullScreen();
-  //frameRate(30);
+
+  //surface.setResizable(true);
+
+  //frameRate(30); // best at 60 fps
 
   sparklerCanvas = createGraphics(width, height);
   starCanvas = createGraphics(width, height);
@@ -46,17 +52,19 @@ void draw() {
   rect(0, 0, width, height);
 
   // draw stars
-  if (random(0, 100) < 10) {
-    fadeGraphics(starCanvas, 2);
+  if (enableStars) {
+    if (random(0, 100) < 10) {
+      fadeGraphics(starCanvas, 2);
+      drawStars(0);
+    }
+    image(starCanvas, 0, 0); // draw stars to screen
   }
-  image(starCanvas, 0, 0); // draw stars to screen
 
   // draw sparkles
-  if (random(0, 100) < 10) {
-    drawStars(0);
+  if (enableSparkles) {
+    fadeGraphics(sparklerCanvas, 10);
+    image(sparklerCanvas, 0, 0); // draw sparkles to screen
   }
-  fadeGraphics(sparklerCanvas, 10);
-  image(sparklerCanvas, 0, 0); // draw sparkles to screen
 
   // draw blobs
   for (int i = 0; i < blobs.length; i++) {
@@ -64,13 +72,15 @@ void draw() {
       drawBlob(blobs[i]);
     }
   }
-  println(frameRate);
+  //println(frameRate);
 }
 
 void drawBlob(Blob blob) {
   blob.update();
 
-  drawSparkle(blob);
+  if (enableSparkles) {
+    drawSparkle(blob);
+  }
 
   strokeWeight(blob.r / 30);
   stroke(blob.hue, 80, 50, 50);
@@ -158,6 +168,16 @@ void controllerChange(int channel, int number, int value) {
       println("Legato ON");
       legato = true;
     }
+  }
+}
+
+void keyPressed() {
+  if (key == '1') {
+    println("toggle stars");
+    enableStars = !enableStars;
+  } else if (key == '2') {
+    println("toggle stparkes");
+    enableSparkles = !enableSparkles;
   }
 }
 
