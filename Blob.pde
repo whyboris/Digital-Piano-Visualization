@@ -15,6 +15,9 @@ class Blob {
 
   void update() {
     vy = vy - 5;
+    if (vy < -500) {
+      vy = -500; 
+    }
     y = y - vy / 100;
     //r = r + 0.5;
     if (y > height) {

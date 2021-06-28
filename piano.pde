@@ -6,73 +6,127 @@ Blob[] blobs = new Blob[130];
 
 boolean legato = false;
 
-float currentHue = 0;
+float currentHue = 20;
+
+PGraphics starCanvas;
+PGraphics sparklerCanvas;
 
 void setup() {
 
   MidiBus.list(); // List all available Midi devices
   myBus = new MidiBus(this, 0, -1); // set MIDI input, ignore output
-  
+
   for (int i = 0; i < blobs.length; i++) {
     blobs[i] = new Blob(0, height, 0, 0, 0, "off");
   }
 
   colorMode(HSB, 100);
-  
+
   size(800, 600); // or enable full screen:
-  // fullScreen();
+  //fullScreen();
+  //frameRate(30);
+
+  sparklerCanvas = createGraphics(width, height);
+  starCanvas = createGraphics(width, height);
+
+  drawStars(200);
 
   background(0);
-  // frameRate(60);
 }
 
 void draw() {
-  currentHue = currentHue + 0.02;
+  currentHue = currentHue + 0.04;
   if (currentHue > 100) {
-    currentHue = 0; 
+    currentHue = 0;
   }
 
-  //background(0);
+  // fade out blobs using a black rectangle of low opacity
+  noStroke();
+  fill(0, 0, 0, 7);
+  rect(0, 0, width, height);
+
+  // draw stars
+  if (random(0, 100) < 10) {
+    fadeGraphics(starCanvas, 2);
+  }
+  image(starCanvas, 0, 0); // draw stars to screen
+
+  // draw sparkles
+  if (random(0, 100) < 10) {
+    drawStars(0);
+  }
+  fadeGraphics(sparklerCanvas, 10);
+  image(sparklerCanvas, 0, 0); // draw sparkles to screen
+
+  // draw blobs
+  for (int i = 0; i < blobs.length; i++) {
+    if (blobs[i].s != "off") {
+      drawBlob(blobs[i]);
+    }
+  }
+  println(frameRate);
+}
+
+void drawBlob(Blob blob) {
+  blob.update();
+
+  drawSparkle(blob);
+
+  strokeWeight(blob.r / 30);
+  stroke(blob.hue, 80, 50, 50);
+  fill(blob.hue, 90, 70, 70);
+
+  float squash = pow(blob.vy / 800, 2);
+  float squash1 = 0.95 + squash;
+  float squash2 = 0.90 + squash;
+
+  ellipse(blob.x, blob.y, blob.r/5, blob.r/5 * squash2);
+
+  noStroke();
+  fill(blob.hue, 100, 100, 90);
+  ellipse(blob.x, blob.y - blob.vy / 50, blob.r/10, blob.r/10 * squash1);
+}
+
+void drawSparkle(Blob blob) {
+  if (random(0, 100) < 40) {
+    sparklerCanvas.beginDraw();
+    sparklerCanvas.colorMode(HSB, 100);
+    // random sparkler
+
+    sparklerCanvas.stroke(nearHue(blob.hue), 100, 100);
+
+    int x = int(random(blob.x - 100, blob.x + 100));
+    int y = int(random(blob.y - 100, blob.y + 100));
+
+    sparklerCanvas.line(x, y, x + 4, y);
+    sparklerCanvas.line(x + 2, y + 2, x + 2, y - 2);
+    sparklerCanvas.endDraw();
+  }
+}
+
+float nearHue(float hue) {
+  float newHue = hue + random(0, 10);
   
-  // stars
-  int numStars = 1;
+  return newHue > 100 ? newHue - 100 : newHue;
+}
+
+void drawStars(int minimum) {
+
+  starCanvas.beginDraw();
+  starCanvas.colorMode(HSB, 100);
+
+  int numStars = minimum + 1;
   for (int i = 0; i < blobs.length; i++) {
     if (blobs[i].s == "on") {
       numStars++;
     }
-  } 
+  }
   for (int i = 0; i < numStars; i++) {
-    fill(currentHue, 100, 100, random(100));
-    ellipse(random(width), random(height), 2, 2);
+    starCanvas.stroke(currentHue, 100, 100, random(0, 100));
+    starCanvas.point(int(random(width)), int(random(height)));
   }
-  
-  noStroke();
-  fill(0, 0, 0, 7);
-  rect(0,0,width,height);
 
-  for (int i = 0; i < blobs.length; i++) {
-    if (blobs[i].s != "off") {
-      blobs[i].update();
-
-      fill(blobs[i].hue, 100, 100, random(100));
-      ellipse(random(blobs[i].x - 100, blobs[i].x + 100), random(blobs[i].y - 100, blobs[i].y + 100), 2, 2);
-
-      strokeWeight(blobs[i].r / 30);
-      stroke(blobs[i].hue, 80, 50, 50);
-      fill(blobs[i].hue, 90, 70, 70);
-      
-      float squash = pow(blobs[i].vy / 800, 2);
-      float squash1 = 0.95 + squash;
-      float squash2 = 0.90 + squash;
-
-      ellipse(blobs[i].x, blobs[i].y, blobs[i].r/5, blobs[i].r/5 * squash2);
-      
-      noStroke();
-      fill(blobs[i].hue, 100, 100, 90);
-      ellipse(blobs[i].x, blobs[i].y - blobs[i].vy / 50, blobs[i].r/10, blobs[i].r/10 * squash1);
-    }
-  }
-  // println(frameRate);
+  starCanvas.endDraw();
 }
 
 void noteOn(int channel, int pitch, int velocity) {
@@ -99,10 +153,33 @@ void controllerChange(int channel, int number, int value) {
     if (value == 0) {
       println("Legato OFF");
       legato = false;
-    } 
+    }
     if (legato == false && value > 0) {
-      println("Legato ON"); 
+      println("Legato ON");
       legato = true;
     }
   }
+}
+
+// Thank you to benja for the code:
+// https://forum.processing.org/two/discussion/comment/54219/#Comment_54219
+void fadeGraphics(PGraphics canvas, int fadeAmount) {
+  canvas.beginDraw();
+  canvas.loadPixels();
+
+  // iterate over pixels
+  for (int i = 0; i < canvas.pixels.length; i++) {
+
+    // get alpha value
+    int alpha = (canvas.pixels[i] >> 24) & 0xFF ;
+
+    // reduce alpha value
+    alpha = max(0, alpha-fadeAmount);
+
+    // assign color with new alpha-value
+    canvas.pixels[i] = alpha<<24 | (canvas.pixels[i]) & 0xFFFFFF ;
+  }
+
+  canvas.updatePixels();
+  canvas.endDraw();
 }
