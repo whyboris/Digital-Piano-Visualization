@@ -34,13 +34,28 @@ void draw() {
 
   //background(0);
   
+  // stars
+  int numStars = 1;
+  for (int i = 0; i < blobs.length; i++) {
+    if (blobs[i].s == "on") {
+      numStars++;
+    }
+  } 
+  for (int i = 0; i < numStars; i++) {
+    fill(currentHue, 100, 100, random(100));
+    ellipse(random(width), random(height), 2, 2);
+  }
+  
   noStroke();
   fill(0, 0, 0, 7);
   rect(0,0,width,height);
 
   for (int i = 0; i < blobs.length; i++) {
-    if (blobs[i].s != "off") {   
+    if (blobs[i].s != "off") {
       blobs[i].update();
+
+      fill(blobs[i].hue, 100, 100, random(100));
+      ellipse(random(blobs[i].x - 100, blobs[i].x + 100), random(blobs[i].y - 100, blobs[i].y + 100), 2, 2);
 
       strokeWeight(blobs[i].r / 30);
       stroke(blobs[i].hue, 80, 50, 50);
