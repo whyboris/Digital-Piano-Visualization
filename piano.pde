@@ -16,31 +16,39 @@ void setup() {
   for (int i = 0; i < blobs.length; i++) {
     blobs[i] = new Blob(0, height, 0, 0, 0, "off");
   }
-  
+
   colorMode(HSB, 100);
   
   size(800, 600); // or enable full screen:
   // fullScreen();
 
   background(0);
-  strokeWeight(10);
-  // frameRate(30);
+  // frameRate(60);
 }
 
 void draw() {
-  currentHue = currentHue + 0.03;
+  currentHue = currentHue + 0.02;
   if (currentHue > 100) {
     currentHue = 0; 
   }
   background(0);
+
   for (int i = 0; i < blobs.length; i++) {
     if (blobs[i].s != "off") {   
       blobs[i].update();
-      fill(blobs[i].hue, 100, 100);
-      stroke(blobs[i].hue, 80, 40);
+
+      strokeWeight(blobs[i].r / 30);
+      stroke(blobs[i].hue, 80, 50, 50);
+      fill(blobs[i].hue, 90, 70, 70);
+
+      ellipse(blobs[i].x, blobs[i].y, blobs[i].r/5, blobs[i].r/5);
+      
+      noStroke();
+      fill(blobs[i].hue, 100, 100, 90);
       ellipse(blobs[i].x, blobs[i].y, blobs[i].r/10, blobs[i].r/10);
     }
   }
+  // println(frameRate);
 }
 
 void noteOn(int channel, int pitch, int velocity) {
@@ -52,7 +60,7 @@ void noteOn(int channel, int pitch, int velocity) {
   blobs[pitch].x = (pitch - 20) * width / 88;
   blobs[pitch].y = blobs[pitch].y > height ? height - 100 : blobs[pitch].y;
   blobs[pitch].vy = velocity * 7;
-  blobs[pitch].r = velocity * 5;
+  blobs[pitch].rFinal = velocity * 5;
   //x++;
 }
 

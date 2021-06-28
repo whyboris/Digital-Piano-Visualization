@@ -1,11 +1,12 @@
 class Blob {
-  float x, y, r, vx, vy, hue;
+  float x, y, r, rFinal, vx, vy, hue;
   String s;
 
   Blob(float xLoc, float yLoc, float radius, float velocityX, float velocityY, String state) { 
     x = xLoc;
     y = yLoc;
     r = radius;
+    rFinal = radius;
     vx = velocityX;
     vy = velocityY;
     s = state; // status: `down`, `legato`, or `decay`
@@ -22,6 +23,9 @@ class Blob {
      if (y < 0) {
        y = 0;
        vy = -10; 
+     }
+     if (abs(r - rFinal) > 0.5) {
+       r = r + 0.5 * (rFinal - r) / 2;
      }
   }
 }
