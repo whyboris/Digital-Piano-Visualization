@@ -1,5 +1,5 @@
 class Blob {
-  float x, y, r, vx, vy;
+  float x, y, r, vx, vy, hue;
   String s;
 
   Blob(float xLoc, float yLoc, float radius, float velocityX, float velocityY, String state) { 
@@ -9,7 +9,7 @@ class Blob {
     vx = velocityX;
     vy = velocityY;
     s = state; // status: `down`, `legato`, or `decay`
-    // TODO: add color & alpha
+    hue = 0; // updated later
   }
 
   void update() {
